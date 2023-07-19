@@ -60,18 +60,18 @@ var itemlist = document.querySelector('#items');
 //create element
 
 // create a div
- var newDiv = document.createElement('div');
+var newDiv = document.createElement('div');
 //add class
- newDiv.className= 'HELLO';
+newDiv.className = 'HELLO';
 
 //add id
-newDiv.id= 'hello1';
+newDiv.id = 'hello1';
 
 //att  attr
-newDiv.setAttribute('title','Hello Div');
+newDiv.setAttribute('title', 'Hello Div');
 
 //create a text node
-var newDivText=document.createTextNode('Hello World');
+var newDivText = document.createTextNode('Hello');
 
 //add text to div
 newDiv.appendChild(newDivText);
@@ -80,9 +80,14 @@ newDiv.appendChild(newDivText);
 var container = document.querySelector('header .container');
 var h1 = document.querySelector('header h1');
 
- console.log(newDiv);
+console.log(newDiv);
 
 
 newDiv.style.fontSize = '30px'
 
- container.insertBefore(newDiv, h1);
+container.insertBefore(newDiv, h1);
+
+var text = document.createTextNode('Hello')
+var childTag = document.getElementById('items')
+childTag.parentNode.insertBefore(text, childTag)
+
