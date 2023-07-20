@@ -1,0 +1,54 @@
+<html lang="en">
+
+<body>
+
+    <form onsubmit="savetolocaltostorage(event)">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="text" id="email" required>
+        </div>
+        <div>
+            <label for="phonenumber">PhoneNumber:</label>
+            <input type="tel" id="phonenumber" required>
+        </div>
+        <input class="btn" type="submit" value="Submit">
+    </form>
+    <ul id='listofitems'>   
+    </ul>
+    <script>
+        function savetolocaltostorage(event){
+            event.preventDefault();
+            const name=event.target.name.value;
+            const email=event.target.email.value;
+            const phonenumber=event.target.phonenumber.value;
+            const obj = {
+            name,
+            email,
+            phonenumber
+            }
+            localStorage.setItem(obj.email,JSON.stringify(obj))
+            ShowUserOnScreen(obj)
+        }
+      function   ShowUserOnScreen(obj){
+        const parentElem = document.getElementById('listofitems')
+       // parentElem.innerHTML= parentElem.innerHTML+ `<li> ${obj.name} - ${obj.email} - ${obj.phonenumber}</li>`
+     const childelem = document.createElement('li')
+     childelem.textContent= obj.name + '- '+ obj.email + '-' + obj.phonenumber
+         const deletebtn = document.createElement('input')
+         deletebtn.type = "button"
+         deletebtn.value = 'Delete'
+         deletebtn.onclick = () =>{
+            localStorage.removeItem(obj.email)
+            parentElem.removeChild(childelem)
+        }
+        childelem.appendChild(deletebtn)
+        parentElem.appendChild(childelem)
+      }
+    </script>
+</body>
+
+</html>
