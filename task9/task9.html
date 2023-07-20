@@ -1,0 +1,34 @@
+<html lang="en">
+
+<body>
+
+    <form onsubmit="savetolocaltostorage(event)">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="text" id="email" required>
+        </div>
+        <div>
+            <label for="phonenumber">PhoneNumber:</label>
+            <input type="tel" id="phonenumber" required>
+        </div>
+        <input class="btn" type="submit" value="Submit">
+    </form>
+    <script>
+        function savetolocaltostorage(event){
+            event.preventDefault();
+            let adnan = {
+                name : event.target.name.value,
+            email : event.target.email.value,
+           phonenumber : event.target.phonenumber.value
+            }
+          let myObj_serialized = JSON.stringify(adnan);
+           localStorage.setItem( event.target.email.value,myObj_serialized)
+            }
+    </script>
+</body>
+
+</html>
