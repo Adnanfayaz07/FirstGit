@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container my-2">
+        <form id="form" class="form-inline mb-3 mx-2">
+            <div class="d-flex justify-content-center my-3">
+                <h2>SELLERS ADMIN PAGE</h2>
+            </div>
+            <label for="amount" class="form-label">Selling Price:</label>
+            <input type="number" class="form-control" id="expense" required>
+
+            <label for="description" class="form-label">Product Name :</label>
+            <input type="text" class="form-control" id="name" required>
+
+            <label for="categories" class="form-label">Choose a category:</label>
+            <select name="categories" id="categories" class="form-control-mg my-2">
+                <option value="Electronics" selected>Electronics</option>
+                <option value="food item" spellcheck="true">Food item</option>
+                <option value="Skincare">Skincare</option>
+            
+            </select>
+            <br>
+            <input type="submit" id="submit" class="btn btn-primary form-control" value="Add product">
+        </form>
+    </div>
+    <div class="container my-3 " id="container2">
+        <section>
+            <h5>products</h5>
+            <ul class="list-group" id="list"></ul>
+            <h6>Electronics</h6>
+            <ul class="list-group" id="listdone"></ul>
+            <h6>Fooditems</h6>
+            <ul class="list-group" id="listdone2"></ul>
+            <h6>skincare</h6>
+            <ul class="list-group" id="listdone3"></ul>
+        </section>
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+<script>
+   const forms = document.querySelector('#form');
+   const list = document.getElementById('list');
+const list1 = document.getElementById('listdone');
+const list2 = document.getElementById('listdone2'); 
+const list3 = document.getElementById('listdone3');
+const submit = document.getElementById('submit')
+list1.className = 'list-items';
+list2.className = 'list-items';
+list3.className = 'list-items';
+const expense = document.querySelector('#expense');
+const expdescription = document.querySelector('#name');
+const expcategory = document.querySelector('#categories');
+
+forms.addEventListener('submit', formInput);
+
+async function formInput(e) {
+    e.preventDefault();
+    const amount = expense.value;
+    const name = expdescription.value;
+    const category = expcategory.value;
+    const obj = {
+        amount,
+        name,
+        category
+    };
+
+    try {
+        const res = await axios.post("https://crudcrud.com/api/01ac285a06e4405a9aa755b49ed49839/expense", obj);
+        showFun(res.data);
+        clearInput();
+    } catch (err) {
+        console.log(err);
+    }
+}
+function showFun(obj) {
+    const li = document.createElement('li');
+    li.className = 'li-item float-right my-3 ';
+    li.appendChild(document.createTextNode(obj.amount + " - " + obj.name + " - " + obj.category));
+
+    const dltbtn = document.createElement('button');
+    dltbtn.className = 'btn btn-danger mx-2 float-right delete';
+    dltbtn.appendChild(document.createTextNode('Delete order'));
+    li.appendChild(dltbtn);
+
+    let targetList;
+
+    switch (obj.category) {
+        case 'Electronics':
+            targetList = list1;
+            break;
+        case 'food item':
+            targetList = list2;
+            break;
+        case 'Skincare':
+            targetList = list3;
+            break;
+        default:
+            targetList = list; 
+            break;
+    }
+
+    targetList.appendChild(li);
+    
+    dltbtn.addEventListener('click', () => {
+        targetList.removeChild(li);
+        deleteFunction(obj._id);
+    });
+}
+async function deleteFunction(id) {
+    try {
+        const res = await axios.delete(`https://crudcrud.com/api/01ac285a06e4405a9aa755b49ed49839/expense/${id}`);
+        console.log(res);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+async function editFunction(obj) {
+    const user = {
+        amount: obj.amount,
+        description: obj.name,
+        category: obj.category
+    };
+
+    try {
+        const res = await axios.post("https://crudcrud.com/api/01ac285a06e4405a9aa755b49ed49839/expense", user);
+        show(res.data);
+        clearInput();
+    } catch (err) {
+        console.log(err);
+    }
+
+    deleteFunction(obj._id);
+}
+
+function show(user) {
+    const li = document.createElement('li');
+    li.className = 'li-item float-right my-2';
+    li.appendChild(document.createTextNode(user.amount + " - " + user.category + " - " + user.name));
+
+    const dltbtn = document.createElement('button');
+    dltbtn.className = 'btn btn-danger mx-2 float-right delete';
+    dltbtn.appendChild(document.createTextNode('Delete Order'));
+    li.appendChild(dltbtn);
+
+    switch (user.category) {
+        case 'Electronics':
+            list1.appendChild(li);
+            break;
+        case 'food item':
+            list2.appendChild(li);
+            break;
+        case 'Skincare':
+            list3.appendChild(li);
+            break;
+        default:
+            break;
+    }
+
+    dltbtn.addEventListener('click', async () => {
+        const parentList = li.parentNode;
+        parentList.removeChild(li);
+        try {
+            const res = await axios.delete(`https://crudcrud.com/api/01ac285a06e4405a9aa755b49ed49839/expense/${user._id}`);
+            console.log(res);
+        } catch (error) {
+            console.log(error.message);
+        }
+    });
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const res = await axios.get("https://crudcrud.com/api/01ac285a06e4405a9aa755b49ed49839/expense");
+        for (var i = 0; i < res.data.length; i++) {
+            show(res.data[i]);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+window.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const res = await axios.get(`https://crudcrud.com/api/01ac285a06e4405a9aa755b49ed49839/expense/${user.category}`);
+		        for (var i = 0; i < res.data.length; i++) {
+            showFun(res.data[i]);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+function clearInput() {
+    expense.value = '';
+    expdescription.value = '';
+    expcategory.value = '';
+}
+</script>
+</html>
